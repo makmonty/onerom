@@ -1,5 +1,6 @@
 import arg from 'arg';
 import { copy } from './src/commands/copy.ts';
+import { dat } from './src/commands/dat.ts';
 import type { Config } from './src/types/config.ts';
 
 const args = arg({
@@ -13,7 +14,7 @@ const command = args['_'][0];
 
 const from = args['--from'] as string;
 const dest = args['--dest'] as string;
-const dat = args['--dat'] as string;
+const datFile = args['--dat'] as string;
 const config: Config = {
   preferences: [
     {
@@ -39,7 +40,16 @@ switch (command) {
     copy({
       from,
       dest,
-      dat,
+      dat: datFile,
+      config,
+      dryRun,
+    });
+    break;
+  case 'dat':
+    dat({
+      from,
+      dest,
+      dat: datFile,
       config,
       dryRun,
     });

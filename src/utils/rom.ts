@@ -126,12 +126,7 @@ export async function getRomGroupsFromDat(dat: Dat, dir: string) {
   const groups: Record<string, RomDescription[]> = {};
 
   for await (const gameDat of dat.datafile.game) {
-    const globPattern = path.join(dir, gameDat.$.name) + '.*';
-    const fileExists = fs.promises.glob(globPattern);
-    const files = [];
-    for await (const file of fileExists) {
-      files.push(file);
-    }
+    const files = await findRomFiles(gameDat.$.name, dir);
     if (!files.length) {
       continue;
     }
@@ -142,6 +137,16 @@ export async function getRomGroupsFromDat(dat: Dat, dir: string) {
   }
 
   return groups;
+}
+
+export async function findRomFiles(rom: string, dir: string) {
+  const globPattern = path.join(dir, rom) + '.*';
+  const fileExists = fs.promises.glob(globPattern);
+  const files = [];
+  for await (const file of fileExists) {
+    files.push(file);
+  }
+  return files;
 }
 
 export async function getRomDescriptionsFromDir(dir: string) {
