@@ -1,0 +1,8 @@
+{
+  "main": "index.ts",
+  "mainFormat": "module",
+  "output": "bin/onerom",
+  "assets": {
+    "RAHasher": "bin/RAHasher"
+  }
+}
