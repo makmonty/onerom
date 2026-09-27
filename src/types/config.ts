@@ -19,5 +19,9 @@ export type ConfigPreference =
     };
 
 export interface Config {
+  retroachievements?: {
+    username: string;
+    webApiKey: string;
+  };
   preferences: Array<ConfigPreference>;
 }

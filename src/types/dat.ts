@@ -10,7 +10,7 @@ export interface Dat {
       category: string[];
       description: string[];
       rom: Array<{
-        $: Array<{
+        $: {
           name: string;
           size?: string;
           crc?: string;
@@ -18,7 +18,9 @@ export interface Dat {
           sha1?: string;
           sha256?: string;
           serial?: string;
-        }>;
+          ra_hash?: string;
+          ra_enabled?: boolean;
+        };
       }>;
     }>;
   };

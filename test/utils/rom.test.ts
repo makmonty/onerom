@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { Config } from '#/types/config';
+import { Config } from '#/types/config.ts';
 import {
   getBestRom,
   getRomClonesFromDat,
   getRomDescription,
   getPreferenceMatchingRoms,
   getPreferenceItemMatchingRoms,
-} from '#/utils/rom';
+} from '#/utils/rom.ts';
 
 const dat = {
   datafile: {

@@ -8,6 +8,9 @@ const args = arg({
   '--dest': String,
   '--dat': String,
   '--dryrun': Boolean,
+  '--system': String,
+  '--rausername': String,
+  '--rawebapikey': String,
 });
 
 const command = args['_'][0];
@@ -15,7 +18,16 @@ const command = args['_'][0];
 const from = args['--from'] as string;
 const dest = args['--dest'] as string;
 const datFile = args['--dat'] as string;
+const system = args['--system'] as string;
+const raUsername = args['--rausername'] as string;
+const raWebApiKey = args['--rawebapikey'] as string;
+const retroachievements = Boolean(raUsername && raWebApiKey);
+
 const config: Config = {
+  retroachievements: {
+    username: raUsername,
+    webApiKey: raWebApiKey,
+  },
   preferences: [
     {
       type: 'regions',
@@ -51,6 +63,8 @@ switch (command) {
       dest,
       dat: datFile,
       config,
+      system,
+      retroachievements,
       dryRun,
     });
     break;
