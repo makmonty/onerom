@@ -8,6 +8,7 @@ import {
   getRomFileRaHash,
 } from '#/utils/retroachievements.ts';
 import { findRomFiles } from '#/utils/rom.ts';
+import { getProgressBar, logger } from '#/utils/logging.ts';
 
 export async function dat({
   from,
@@ -26,7 +27,7 @@ export async function dat({
   config: Config;
   dryRun: boolean;
 }) {
-  console.log('Analyzing the input DAT file');
+  logger.info('Analyzing the input DAT file');
   const datContent = await getDatContent(dat);
 
   if (retroachievements) {
@@ -44,25 +45,40 @@ export async function dat({
       webApiKey,
     );
 
+    const progressBar = getProgressBar();
+    progressBar.start(datContent.datafile.game.length, 0, { rom: '-' });
+
     for (const game of datContent.datafile.game) {
+      progressBar.increment(1, { rom: game.$.name });
       const files = await findRomFiles(game.$.name, from);
       if (!files.length) {
+        logger.warn('Could not find files for rom %s', game.$.name);
         continue;
       }
 
       if (files.length > 1) {
-        console.log('Multifile rom. Unsupported');
+        logger.warn('Multifile rom. Unsupported');
         continue;
       }
 
       const romPath = files[0];
 
-      const hash = await getRomFileRaHash(romPath, system);
-      game.rom[0].$.ra_hash = hash;
+      try {
+        const hash = await getRomFileRaHash(romPath, system);
+        game.rom[0].$.ra_hash = hash;
+      } catch (e) {
+        logger.error(
+          `Could not obtain hash from file %s: %s`,
+          romPath,
+          e instanceof Error ? e.message : e,
+        );
+      }
     }
+
+    progressBar.stop();
 
     const xmlBuilder = new xml2js.Builder();
     const xml = xmlBuilder.buildObject(datContent);
-    console.log(xml);
+    // console.log(xml);
   }
 }

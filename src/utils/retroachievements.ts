@@ -13,7 +13,7 @@ export async function getRomFileRaHash(romPath: string, system: string) {
   );
 
   const hash = await new Promise<string>((resolve, reject) => {
-    const command = `${hasherPath} ${system} "${romPath}"`;
+    const command = `${hasherPath} ${system} "${escapeFilename(romPath)}"`;
     exec(command, (error, stdout) => {
       if (error) {
         return reject(error);
@@ -24,6 +24,10 @@ export async function getRomFileRaHash(romPath: string, system: string) {
   });
 
   return hash.trim();
+}
+
+export function escapeFilename(filename: string) {
+  return filename.replace('$', '\\$');
 }
 
 export async function getRASystemGames(

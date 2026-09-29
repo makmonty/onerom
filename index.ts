@@ -2,6 +2,7 @@ import arg from 'arg';
 import { copy } from './src/commands/copy.ts';
 import { dat } from './src/commands/dat.ts';
 import type { Config } from './src/types/config.ts';
+import { logger } from '#/utils/logging.ts';
 
 const args = arg({
   '--from': String,
@@ -69,5 +70,5 @@ switch (command) {
     });
     break;
   default:
-    console.log('No command provided');
+    logger.error('No command provided');
 }

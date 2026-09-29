@@ -14,6 +14,7 @@ import type {
   RomDescription,
 } from '#/types/rom.ts';
 import { getDatContent } from './dat.ts';
+import { logger } from './logging.ts';
 
 const tagRegEx = /\[([^\]]*)\]|\(([^)]*)\)/g;
 
@@ -122,7 +123,7 @@ export function getPreferenceItemMatchingRoms(
 }
 
 export async function getRomGroupsFromDat(dat: Dat, dir: string) {
-  console.log('Shaping the data');
+  logger.info('Shaping the data');
   const groups: Record<string, RomDescription[]> = {};
 
   for await (const gameDat of dat.datafile.game) {
@@ -171,7 +172,7 @@ export async function getBestRoms({
 }) {
   const datContent = await getDatContent(dat);
   const groups = await getRomGroupsFromDat(datContent, from);
-  console.log(`${Object.keys(groups).length} original roms found`);
+  logger.info(`${Object.keys(groups).length} original roms found`);
 
   const bestRoms: Array<RomDescription> = [];
   Object.values(groups).forEach((group) => {

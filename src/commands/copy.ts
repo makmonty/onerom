@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import type { Config } from '#/types/config.ts';
 import { getBestRoms } from '#/utils/rom.ts';
-import cliProgress from 'cli-progress';
+import { getProgressBar, logger } from '#/utils/logging.ts';
 
 export async function copy({
   from,
@@ -17,17 +17,15 @@ export async function copy({
   config: Config;
   dryRun: boolean;
 }) {
-  console.log('Analyzing the roms');
+  logger.info('Analyzing the roms');
   const bestRoms = await getBestRoms({
     from,
     dat,
     config,
   });
 
-  console.log(`Copying${dryRun ? ' DRY RUN' : ''}`);
-  const progressBar = new cliProgress.SingleBar({
-    format: `{bar} | {percentage}% | {value}/{total} Files | {rom}`,
-  });
+  logger.info(`Copying${dryRun ? ' DRY RUN' : ''}`);
+  const progressBar = getProgressBar();
   progressBar.start(bestRoms.length, 0, { rom: '-' });
 
   for await (const rom of bestRoms) {
