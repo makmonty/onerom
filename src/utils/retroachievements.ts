@@ -1,6 +1,10 @@
 import path from 'path';
 import { exec } from 'child_process';
-import { buildAuthorization, getGameList } from '@retroachievements/api';
+import {
+  buildAuthorization,
+  type GameList,
+  getGameList,
+} from '@retroachievements/api';
 import { RASystemCode } from '#/constants/retroachievements.ts';
 
 export async function getRomFileRaHash(romPath: string, system: string) {
@@ -46,4 +50,12 @@ export async function getRASystemGames(
 
 export async function getRAAuthorization(username: string, webApiKey: string) {
   return buildAuthorization({ username, webApiKey });
+}
+
+export function hasCheevos(hash: string, gameList: GameList) {
+  return gameList.some(
+    (game) =>
+      game.hashes?.some((gameHash) => gameHash === hash) &&
+      game.numAchievements > 0,
+  );
 }

@@ -3,7 +3,7 @@ import { Config } from '#/types/config.ts';
 import {
   getBestRom,
   getRomClonesFromDat,
-  getRomDescription,
+  getromDescriptor,
   getPreferenceMatchingRoms,
   getPreferenceItemMatchingRoms,
 } from '#/utils/rom.ts';
@@ -73,10 +73,10 @@ const dat = {
 };
 
 describe('Rom utils', () => {
-  describe('#getRomDescription', () => {
+  describe('#getromDescriptor', () => {
     it('should return the rom information', () => {
       expect(
-        getRomDescription(
+        getromDescriptor(
           '/home/test/Game . Test (1999)(Japan)[En,Fr,Es](Rev 1).abc',
         ),
       ).toEqual({
@@ -98,7 +98,7 @@ describe('Rom utils', () => {
     });
 
     it('should split tags with comma', () => {
-      const parts = getRomDescription(
+      const parts = getromDescriptor(
         '/home/test/Game (tag1, tag2) [tag3, tag4] [tag5].abc',
       );
       expect(parts.tags).toEqual(['tag1', 'tag2', 'tag3', 'tag4', 'tag5']);
@@ -206,9 +206,9 @@ describe('Rom utils', () => {
         ],
       };
 
-      const romDescriptions = roms.map(getRomDescription);
+      const romDescriptors = roms.map(getromDescriptor);
 
-      expect(getBestRom(romDescriptions, config)).toEqual(romDescriptions[2]);
+      expect(getBestRom(romDescriptors, config)).toEqual(romDescriptors[2]);
     });
 
     it('should return the roms that fulfill the second preference if any and no rom matches the top preference', () => {
@@ -227,9 +227,9 @@ describe('Rom utils', () => {
         ],
       };
 
-      const romDescriptions = roms.map(getRomDescription);
+      const romDescriptors = roms.map(getromDescriptor);
 
-      expect(getBestRom(romDescriptions, config)).toEqual(romDescriptions[1]);
+      expect(getBestRom(romDescriptors, config)).toEqual(romDescriptors[1]);
     });
   });
 
@@ -241,14 +241,14 @@ describe('Rom utils', () => {
         'Some Game (France)',
       ];
 
-      const romDescriptions = roms.map(getRomDescription);
+      const romDescriptors = roms.map(getromDescriptor);
 
       expect(
-        getPreferenceMatchingRoms(romDescriptions, {
+        getPreferenceMatchingRoms(romDescriptors, {
           type: 'regions',
           order: ['Spain', 'USA'],
         }),
-      ).toEqual([romDescriptions[1]]);
+      ).toEqual([romDescriptors[1]]);
     });
   });
 
@@ -260,11 +260,11 @@ describe('Rom utils', () => {
         'Some Game (France)',
       ];
 
-      const romDescriptions = roms.map(getRomDescription);
+      const romDescriptors = roms.map(getromDescriptor);
 
       expect(
-        getPreferenceItemMatchingRoms(romDescriptions, 'USA', 'regions'),
-      ).toEqual([romDescriptions[1]]);
+        getPreferenceItemMatchingRoms(romDescriptors, 'USA', 'regions'),
+      ).toEqual([romDescriptors[1]]);
     });
   });
 });

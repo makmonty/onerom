@@ -1,4 +1,4 @@
-import path from 'path';
+import fs from 'fs';
 import xml2js from 'xml2js';
 import { RASystemCode } from '#/constants/retroachievements.ts';
 import type { Config } from '#/types/config.ts';
@@ -6,6 +6,7 @@ import { getDatContent } from '#/utils/dat.ts';
 import {
   getRASystemGames,
   getRomFileRaHash,
+  hasCheevos,
 } from '#/utils/retroachievements.ts';
 import { findRomFiles } from '#/utils/rom.ts';
 import { getProgressBar, logger } from '#/utils/logging.ts';
@@ -49,7 +50,7 @@ export async function dat({
     progressBar.start(datContent.datafile.game.length, 0, { rom: '-' });
 
     for (const game of datContent.datafile.game) {
-      progressBar.increment(1, { rom: game.$.name });
+      progressBar.increment(1, { rom: game.$.name, type: 'Roms' });
       const files = await findRomFiles(game.$.name, from);
       if (!files.length) {
         logger.warn('Could not find files for rom %s', game.$.name);
@@ -62,9 +63,10 @@ export async function dat({
       }
 
       const romPath = files[0];
+      let hash;
 
       try {
-        const hash = await getRomFileRaHash(romPath, system);
+        hash = await getRomFileRaHash(romPath, system);
         game.rom[0].$.ra_hash = hash;
       } catch (e) {
         logger.error(
@@ -73,12 +75,24 @@ export async function dat({
           e instanceof Error ? e.message : e,
         );
       }
+
+      if (!hash) {
+        continue;
+      }
+
+      game.rom[0].$.ra_enabled = hasCheevos(hash, raList) ? 'true' : 'false';
     }
 
     progressBar.stop();
 
     const xmlBuilder = new xml2js.Builder();
     const xml = xmlBuilder.buildObject(datContent);
-    // console.log(xml);
+
+    logger.info('Writing DAT file');
+    if (!dryRun) {
+      await fs.promises.writeFile(dest, xml);
+    } else {
+      logger.info('DRY RUN!');
+    }
   }
 }

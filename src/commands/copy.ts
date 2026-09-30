@@ -33,7 +33,7 @@ export async function copy({
     if (!dryRun) {
       await fs.promises.copyFile(rom.path, newPath);
     }
-    progressBar.increment(1, { rom: rom.file });
+    progressBar.increment(1, { rom: rom.file, type: 'Files' });
   }
   progressBar.stop();
 }

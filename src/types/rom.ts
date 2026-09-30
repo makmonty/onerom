@@ -5,13 +5,14 @@ export type RomExtension = typeof validExtensions;
 export type RomRegion = typeof regions;
 export type RomLanguage = typeof languages;
 
-export interface RomDescription {
+export interface RomDescriptor {
   path: string;
   file: string;
   game: string;
   rom: string;
   extension: RomExtension;
   tags: string[];
+  rawTags: string[];
   regions: RomRegion[];
   languages: RomLanguage[];
   aftermarket: boolean;
@@ -20,4 +21,8 @@ export interface RomDescription {
   pirate: boolean;
   revision: number;
   hack: boolean;
+  verified: boolean;
+  badDump: boolean;
+  raHash: string;
+  hasCheevos: boolean;
 }

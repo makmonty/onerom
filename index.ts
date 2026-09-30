@@ -31,11 +31,19 @@ const config: Config = {
   },
   preferences: [
     {
+      type: 'hasCheevos',
+      order: [true, false],
+    },
+    {
       type: 'regions',
       order: ['Spain', 'Europe', 'World', 'USA', 'Japan'],
     },
     {
       type: 'pirate',
+      order: [false],
+    },
+    {
+      type: 'badDump',
       order: [false],
     },
   ],

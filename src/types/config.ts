@@ -14,7 +14,15 @@ export type ConfigPreference =
       order: number[];
     }
   | {
-      type: 'aftermarket' | 'beta' | 'demo' | 'pirate' | 'hack';
+      type:
+        | 'aftermarket'
+        | 'beta'
+        | 'demo'
+        | 'pirate'
+        | 'hack'
+        | 'verified'
+        | 'badDump'
+        | 'hasCheevos';
       order: boolean[];
     };
 
