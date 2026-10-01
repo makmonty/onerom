@@ -19,7 +19,7 @@ const tagRegEx = /(\[([^\]]*)\])|(\(([^)]*)\))/g;
 
 export function getRomDescriptor(
   romPath: string,
-  datGame: DatGame,
+  datGame?: DatGame,
 ): RomDescriptor {
   // Extract file name
   const file = romPath.split('/').pop()!;
@@ -52,10 +52,14 @@ export function getRomDescriptor(
   const revision = parseInt(
     tags.find((tag) => tag.startsWith('Rev'))?.match(/\d+/)?.[0] || '0',
   );
-  const verified = datGame.rom[0].$.status === 'verified';
-  const badDump = datGame.rom[0].$.status === 'baddump';
-  const raHash = datGame.rom[0].$.ra_hash || '';
-  const hasCheevos = datGame.rom[0].$.ra_enabled === 'true';
+  const verified =
+    datGame?.rom[0].$.status === 'verified' ||
+    rawTags.some((tag) => tag === '[!]');
+  const badDump =
+    datGame?.rom[0].$.status === 'baddump' ||
+    rawTags.some((tag) => tag.startsWith('[b'));
+  const raHash = datGame?.rom[0].$.ra_hash || '';
+  const hasCheevos = datGame?.rom[0].$.ra_enabled === 'true';
 
   return {
     path: romPath,
@@ -126,7 +130,7 @@ export function getPreferenceMatchingRoms(
 
 export function getPreferenceItemMatchingRoms(
   romDescriptors: RomDescriptor[],
-  item: ConfigPreference['order']['0'],
+  item: ConfigPreference['order'][number],
   type: ConfigPreference['type'],
 ) {
   return romDescriptors.filter((romDesc) =>

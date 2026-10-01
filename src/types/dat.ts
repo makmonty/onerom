@@ -3,7 +3,7 @@ export type DatGameRomStatus = 'verified' | 'baddump';
 export interface DatGameRom {
   $: {
     name: string;
-    status: DatGameRomStatus;
+    status?: DatGameRomStatus;
     size?: string;
     crc?: string;
     md5?: string;
@@ -22,8 +22,8 @@ export interface DatGame {
     cloneofid?: string;
     cloneof?: string;
   };
-  category: string[];
-  description: string[];
+  category?: string[];
+  description?: string[];
   rom: Array<DatGameRom>;
 }
 

@@ -3,12 +3,13 @@ import { Config } from '#/types/config.ts';
 import {
   getBestRom,
   getRomClonesFromDat,
-  getromDescriptor,
+  getRomDescriptor,
   getPreferenceMatchingRoms,
   getPreferenceItemMatchingRoms,
 } from '#/utils/rom.ts';
+import { Dat } from '../../src/types/dat';
 
-const dat = {
+const dat: Dat = {
   datafile: {
     game: [
       {
@@ -18,7 +19,13 @@ const dat = {
         },
         category: ['Games'],
         description: ['Some Game (Japan)'],
-        rom: [{ $: [] }],
+        rom: [
+          {
+            $: {
+              name: 'Some Game (Japan)',
+            },
+          },
+        ],
       },
       {
         $: {
@@ -28,7 +35,13 @@ const dat = {
         },
         category: ['Games'],
         description: ['Some Game (USA)'],
-        rom: [{ $: [] }],
+        rom: [
+          {
+            $: {
+              name: 'Some Game (USA)',
+            },
+          },
+        ],
       },
       {
         $: {
@@ -38,7 +51,13 @@ const dat = {
         },
         category: ['Games'],
         description: ['Some Game (Europe)'],
-        rom: [{ $: [] }],
+        rom: [
+          {
+            $: {
+              name: 'Some Game (Europe)',
+            },
+          },
+        ],
       },
       {
         $: {
@@ -47,7 +66,13 @@ const dat = {
         },
         category: ['Games'],
         description: ['Other game (Japan)'],
-        rom: [{ $: [] }],
+        rom: [
+          {
+            $: {
+              name: 'Other game (Japan)',
+            },
+          },
+        ],
       },
       {
         $: {
@@ -57,7 +82,13 @@ const dat = {
         },
         category: ['Games'],
         description: ['Other game (Japan)(Rev 1)'],
-        rom: [{ $: [] }],
+        rom: [
+          {
+            $: {
+              name: 'Other game (Japan)(Rev1)',
+            },
+          },
+        ],
       },
       {
         $: {
@@ -66,17 +97,23 @@ const dat = {
         },
         category: ['Games'],
         description: ['No clone game (Japan)'],
-        rom: [{ $: [] }],
+        rom: [
+          {
+            $: {
+              name: 'No clone game (Japan)',
+            },
+          },
+        ],
       },
     ],
   },
 };
 
 describe('Rom utils', () => {
-  describe('#getromDescriptor', () => {
-    it('should return the rom information', () => {
+  describe('#getRomDescriptor', () => {
+    it('should return the rom information from the rom name', () => {
       expect(
-        getromDescriptor(
+        getRomDescriptor(
           '/home/test/Game . Test (1999)(Japan)[En,Fr,Es](Rev 1).abc',
         ),
       ).toEqual({
@@ -94,11 +131,58 @@ describe('Rom utils', () => {
         hack: false,
         pirate: false,
         revision: 1,
+        verified: false,
+        raHash: '',
+        hasCheevos: false,
+        badDump: false,
+        rawTags: ['(1999)', '(Japan)', '[En,Fr,Es]', '(Rev 1)'],
+      });
+    });
+
+    it('should return the rom information from the rom name and the dat', () => {
+      expect(
+        getRomDescriptor(
+          '/home/test/Game . Test (1999)(Japan)[En,Fr,Es](Rev 1).abc',
+          {
+            $: {
+              name: 'Game . Test (1999)(Japan)[En,Fr,Es](Rev 1)',
+              id: '1234',
+            },
+            rom: [
+              {
+                $: {
+                  name: 'Game . Test (1999)(Japan)[En,Fr,Es](Rev 1)',
+                  status: 'verified',
+                },
+              },
+            ],
+          },
+        ),
+      ).toEqual({
+        path: '/home/test/Game . Test (1999)(Japan)[En,Fr,Es](Rev 1).abc',
+        file: 'Game . Test (1999)(Japan)[En,Fr,Es](Rev 1).abc',
+        game: 'Game . Test',
+        rom: 'Game . Test (1999)(Japan)[En,Fr,Es](Rev 1)',
+        extension: 'abc',
+        tags: ['1999', 'Japan', 'En', 'Fr', 'Es', 'Rev 1'],
+        regions: ['Japan'],
+        languages: ['En', 'Fr', 'Es'],
+        aftermarket: false,
+        beta: false,
+        demo: false,
+        hack: false,
+        pirate: false,
+        revision: 1,
+        badDump: false,
+        verified: true,
+        hasCheevos: false,
+        raHash: '',
+        rawTags: ['(1999)', '(Japan)', '[En,Fr,Es]', '(Rev 1)'],
       });
     });
 
     it('should split tags with comma', () => {
-      const parts = getromDescriptor(
+      const parts = getRomDescriptor(
         '/home/test/Game (tag1, tag2) [tag3, tag4] [tag5].abc',
       );
       expect(parts.tags).toEqual(['tag1', 'tag2', 'tag3', 'tag4', 'tag5']);
@@ -115,7 +199,13 @@ describe('Rom utils', () => {
           },
           category: ['Games'],
           description: ['Some Game (Japan)'],
-          rom: [{ $: [] }],
+          rom: [
+            {
+              $: {
+                name: 'Some Game (Japan)',
+              },
+            },
+          ],
         },
         {
           $: {
@@ -125,7 +215,13 @@ describe('Rom utils', () => {
           },
           category: ['Games'],
           description: ['Some Game (USA)'],
-          rom: [{ $: [] }],
+          rom: [
+            {
+              $: {
+                name: 'Some Game (USA)',
+              },
+            },
+          ],
         },
         {
           $: {
@@ -135,7 +231,13 @@ describe('Rom utils', () => {
           },
           category: ['Games'],
           description: ['Some Game (Europe)'],
-          rom: [{ $: [] }],
+          rom: [
+            {
+              $: {
+                name: 'Some Game (Europe)',
+              },
+            },
+          ],
         },
       ]);
     });
@@ -149,7 +251,13 @@ describe('Rom utils', () => {
           },
           category: ['Games'],
           description: ['Some Game (Japan)'],
-          rom: [{ $: [] }],
+          rom: [
+            {
+              $: {
+                name: 'Some Game (Japan)',
+              },
+            },
+          ],
         },
         {
           $: {
@@ -159,7 +267,7 @@ describe('Rom utils', () => {
           },
           category: ['Games'],
           description: ['Some Game (USA)'],
-          rom: [{ $: [] }],
+          rom: [{ $: { name: 'Some Game (USA)' } }],
         },
         {
           $: {
@@ -169,7 +277,7 @@ describe('Rom utils', () => {
           },
           category: ['Games'],
           description: ['Some Game (Europe)'],
-          rom: [{ $: [] }],
+          rom: [{ $: { name: 'Some Game (Europe)' } }],
         },
       ]);
     });
@@ -183,7 +291,13 @@ describe('Rom utils', () => {
           },
           category: ['Games'],
           description: ['No clone game (Japan)'],
-          rom: [{ $: [] }],
+          rom: [
+            {
+              $: {
+                name: 'No clone game (Japan)',
+              },
+            },
+          ],
         },
       ]);
     });
@@ -206,7 +320,7 @@ describe('Rom utils', () => {
         ],
       };
 
-      const romDescriptors = roms.map(getromDescriptor);
+      const romDescriptors = roms.map((rom) => getRomDescriptor(rom));
 
       expect(getBestRom(romDescriptors, config)).toEqual(romDescriptors[2]);
     });
@@ -227,21 +341,21 @@ describe('Rom utils', () => {
         ],
       };
 
-      const romDescriptors = roms.map(getromDescriptor);
+      const romDescriptors = roms.map((rom) => getRomDescriptor(rom));
 
       expect(getBestRom(romDescriptors, config)).toEqual(romDescriptors[1]);
     });
   });
 
   describe('#getPreferenceMatchingRoms', () => {
-    it.only('should return the roms that match the first item that has matches', () => {
+    it('should return the roms that match the first item that has matches', () => {
       const roms = [
         'Some Game (Japan)',
         'Some Game (USA)',
         'Some Game (France)',
       ];
 
-      const romDescriptors = roms.map(getromDescriptor);
+      const romDescriptors = roms.map((rom) => getRomDescriptor(rom));
 
       expect(
         getPreferenceMatchingRoms(romDescriptors, {
@@ -260,7 +374,7 @@ describe('Rom utils', () => {
         'Some Game (France)',
       ];
 
-      const romDescriptors = roms.map(getromDescriptor);
+      const romDescriptors = roms.map((rom) => getRomDescriptor(rom));
 
       expect(
         getPreferenceItemMatchingRoms(romDescriptors, 'USA', 'regions'),

@@ -1,9 +1,9 @@
 import { languages, regions } from '#/constants/nointro.ts';
 import { validExtensions } from '#/constants/rom.ts';
 
-export type RomExtension = typeof validExtensions;
-export type RomRegion = typeof regions;
-export type RomLanguage = typeof languages;
+export type RomExtension = (typeof validExtensions)[number];
+export type RomRegion = (typeof regions)[number];
+export type RomLanguage = (typeof languages)[number];
 
 export interface RomDescriptor {
   path: string;
